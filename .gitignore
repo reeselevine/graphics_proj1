@@ -1,0 +1,6 @@
+debug/*
+release/*
+x64/*
+build/*
+bin/*
+obj/*
