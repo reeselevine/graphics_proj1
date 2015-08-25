@@ -126,6 +126,7 @@ namespace Project1
                 }
             }
 
+            //water mesh
             vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), new Vector3(0f, 1f, 0f), Color.Blue));
             vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, worldSize), new Vector3(0f, 1f, 0f), Color.Blue));
             vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, worldSize), new Vector3(0f, 1f, 0f), Color.Blue));
@@ -148,7 +149,7 @@ namespace Project1
             {
                 return Color.SlateGray;
             }
-            if (height > 0f)
+            if (height > 1f)
             {
                 return Color.ForestGreen;
             }
