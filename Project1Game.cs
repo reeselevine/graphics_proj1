@@ -56,7 +56,7 @@ namespace Project1
             mouseManager = new MouseManager(this);
             pitch = -0.5f;
             yaw = 0f;
-            mouseVelocity = 0.05f;
+            mouseVelocity = 0.01f;
             moveVelocity = 0.1f;
             eye = new Vector3(20f, 20f, 20f);
             // Setup the relative directory to the executable directory

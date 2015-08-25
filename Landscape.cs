@@ -36,6 +36,13 @@ namespace Project1
 
             inputLayout = VertexInputLayout.FromBuffer(0, vertices);
             this.game = game;
+
+            //water mesh
+            new VertexPositionColor(new Vector3(0f, 0f, 0f),Color.Blue);
+            new VertexPositionColor(new Vector3(worldSize, 0f, 0f),Color.Blue);
+            new VertexPositionColor(new Vector3(worldSize, 0f, worldSize), Color.Blue);
+            new VertexPositionColor(new Vector3(0f, 0f, worldSize), Color.Blue);    
+        
         }
 
         public override void Update(GameTime gameTime, Matrix world, Matrix view)
