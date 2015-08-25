@@ -45,8 +45,6 @@ namespace Project1
             inputLayout = VertexInputLayout.FromBuffer(0, vertices);
             this.game = game;
 
-            //water mesh
-            
         }
 
         public override void Update(GameTime gameTime, Matrix world, Matrix view)
