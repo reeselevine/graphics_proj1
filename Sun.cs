@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Project1
 {
-    class PlayerView
+    class Sun
     {
-
+        
     }
 }

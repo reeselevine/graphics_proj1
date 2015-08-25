@@ -87,7 +87,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PlayerView.cs" />
+    <Compile Include="Sun.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Landscape.cs" />
     <Compile Include="ColoredGameObject.cs" />
