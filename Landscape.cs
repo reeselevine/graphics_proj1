@@ -161,7 +161,7 @@ namespace Project1
         {
 
             heightMap = new float[worldSize, worldSize];
-            float range = 30.0f;
+            float range = 40.0f;
             Random generator = new Random();
             heightMap[0, 0] = heightMap[0, worldSize - 1] =
                 heightMap[worldSize - 1, 0] = heightMap[worldSize - 1, worldSize - 1] =
