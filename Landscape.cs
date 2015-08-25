@@ -10,7 +10,7 @@ namespace Project1
     using SharpDX.Toolkit.Graphics;
     class Landscape : ColoredGameObject
     {
-        private int worldSize = 129; // 2^n + 1, where n = 7
+        private int worldSize;
         private float[,] heightMap;
         private Vector3[,] vertexNormals;
         private Vector3 lightDirection;
@@ -18,18 +18,20 @@ namespace Project1
         private Vector3 diffuseColor;
         private Vector3 ambientColor;
         private float rotationSpeed;
+
         private float zAngle;
         private float yAngle;
 
-        public Landscape(Game game)
+        public Landscape(Game game, float rotationSpeed, int worldSize)
         {
+            this.worldSize = worldSize;
             DiamondSquareGenerator();
             BuildVertexNormals();
-            VertexPositionNormalColor[] vertexList = BuildVertexArray();
-            
-            vertices = Buffer.Vertex.New(
-                                    game.GraphicsDevice, vertexList);
+            VertexPositionNormalColor[] vertexList = BuildVertexArray();       
+            vertices = Buffer.Vertex.New(game.GraphicsDevice, vertexList);
             rotationSpeed = 0.01f;
+            this.rotationSpeed = rotationSpeed;
+
             zAngle = 0f;
             yAngle = (float)Math.PI;
             lightDirection = new Vector3(0f, (float)Math.Sin(yAngle), (float)Math.Cos(zAngle));
@@ -55,6 +57,10 @@ namespace Project1
 
         public override void Update(GameTime gameTime, Matrix world, Matrix view)
         {
+            zAngle += rotationSpeed;
+            yAngle += rotationSpeed;
+            lightDirection = new Vector3(0f, (float)Math.Sin(yAngle), (float)Math.Cos(zAngle));
+
             var time = (float)gameTime.TotalGameTime.TotalSeconds;
             zAngle += rotationSpeed;
             yAngle += rotationSpeed;
@@ -139,7 +145,6 @@ namespace Project1
 
                 }
             }
-
             Color water = new Color(0,0,255,140);
             Vector3 normal = new Vector3(0f, 1f, 0f);
             vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), normal, water));
@@ -154,6 +159,7 @@ namespace Project1
             vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, worldSize - 1), normal, water));
             vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), normal, water));
             vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize - 1, 0f, worldSize - 1), normal, water));
+           
 
 
             return vertices.ToArray();
@@ -170,7 +176,7 @@ namespace Project1
             {
                 return Color.SlateGray;
             }
-            if (height > 1f)
+            if (height > 0f)
             {
                 return Color.ForestGreen;
             }
@@ -195,7 +201,7 @@ namespace Project1
         {
 
             heightMap = new float[worldSize, worldSize];
-            float range = 40.0f;
+            float range = 50.0f;
             Random generator = new Random();
             heightMap[0, 0] = heightMap[0, worldSize - 1] =
                 heightMap[worldSize - 1, 0] = heightMap[worldSize - 1, worldSize - 1] =
