@@ -62,6 +62,8 @@ namespace Project1
             game.GraphicsDevice.Draw(PrimitiveType.TriangleList, vertices.ElementCount);
         }
 
+        //this creates the sun (a cube) and assigns the color yellow 
+        //the sun rotates with the same rotation speed as the light direction
         private void BuildVertices()
         {
             float y = diameter * (float)Math.Sin(yAngle);

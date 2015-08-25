@@ -22,6 +22,7 @@ namespace Project1
         private float zAngle;
         private float yAngle;
 
+        //builds the vertex list, assigns values for lighting and light rotation
         public Landscape(Game game, float rotationSpeed, int worldSize)
         {
             this.worldSize = worldSize;
@@ -54,6 +55,8 @@ namespace Project1
 
         }
 
+        //the worldview and lighting direction (diffuse, specular, and ambient) are updated
+
         public override void Update(GameTime gameTime, Matrix world, Matrix view)
         {
             var time = (float)gameTime.TotalGameTime.TotalSeconds;
@@ -83,6 +86,8 @@ namespace Project1
             game.GraphicsDevice.Draw(PrimitiveType.TriangleList, vertices.ElementCount);
         }
 
+        //uses the heightmap to create surface normals 
+        //this is used to illuminate the landscape
         private void BuildVertexNormals()
         {
             vertexNormals = new Vector3[worldSize, worldSize];
@@ -140,7 +145,10 @@ namespace Project1
 
                 }
             }
-            Color water = new Color(0,0,255, 140);
+
+            //creates a water plane with two sides so that if you are underwater you can still see the water from underneath
+            //the fourth value (140) is to make the water transparent so as to see the landmass underneath
+            Color water = new Color(0,0,255,140);
             Vector3 normal = new Vector3(0f, 1f, 0f);
             vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), normal, water));
             vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, worldSize - 1), normal, water));
@@ -196,7 +204,7 @@ namespace Project1
         {
 
             heightMap = new float[worldSize, worldSize];
-            float range = 40.0f;
+            float range = 50.0f;
             Random generator = new Random();
             heightMap[0, 0] = heightMap[0, worldSize - 1] =
                 heightMap[worldSize - 1, 0] = heightMap[worldSize - 1, worldSize - 1] =

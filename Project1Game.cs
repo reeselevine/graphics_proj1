@@ -119,6 +119,7 @@ namespace Project1
             base.Draw(gameTime);
         }
 
+        //this directly impacts the views based on the user's mouse and key input (AWSDQE and mouse)
         private Matrix UpdateViewMatrix()
         {
             keyboardState = keyboardManager.GetState();
