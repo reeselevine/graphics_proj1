@@ -63,7 +63,7 @@ namespace Project1
             roll = 0f;
             mouseVelocity = 0.05f;
             moveVelocity = 0.1f;
-            eye = new Vector3(0f, 50, 0f);
+            eye = new Vector3(0f, 50f, 0f);
             // Setup the relative directory to the executable directory
             // for loading contents with the ContentManager
             Content.RootDirectory = "Content";

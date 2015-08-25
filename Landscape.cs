@@ -145,7 +145,7 @@ namespace Project1
 
                 }
             }
-            Color water = new Color(0,0,255,140);
+            Color water = new Color(0,0,255, 140);
             Vector3 normal = new Vector3(0f, 1f, 0f);
             vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), normal, water));
             vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, worldSize - 1), normal, water));
@@ -201,7 +201,7 @@ namespace Project1
         {
 
             heightMap = new float[worldSize, worldSize];
-            float range = 50.0f;
+            float range = 40.0f;
             Random generator = new Random();
             heightMap[0, 0] = heightMap[0, worldSize - 1] =
                 heightMap[worldSize - 1, 0] = heightMap[worldSize - 1, worldSize - 1] =
@@ -245,6 +245,5 @@ namespace Project1
                 }
             }
         }
-
     }
 }
