@@ -33,9 +33,18 @@ namespace Project1
     public class Project1Game : Game
     {
         private GraphicsDeviceManager graphicsDeviceManager;
-        private GameObject model;
+        private Landscape model;
+        // Position movment variables
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
+        private KeyboardState keyboardState;
+        private MouseState mouseState;
+        private float mouseVelocity;
+        private float moveVelocity;
+        private float pitch;
+        private float yaw;
+        private float roll;
+        private Vector3 position;
 
 
         /// <summary>
@@ -47,6 +56,8 @@ namespace Project1
             graphicsDeviceManager = new GraphicsDeviceManager(this);
             keyboardManager = new KeyboardManager(this);
             mouseManager = new MouseManager(this);
+            pitch = -0.2f;
+            yaw = 0f;
 
             // Setup the relative directory to the executable directory
             // for loading contents with the ContentManager
@@ -71,7 +82,9 @@ namespace Project1
 
         protected override void Update(GameTime gameTime)
         {
-            model.Update(gameTime);
+            Matrix view = UpdateViewMatrix();
+
+            model.Update(gameTime, Matrix.Identity, view);
 
             // Handle base.Update
             base.Update(gameTime);
@@ -86,6 +99,48 @@ namespace Project1
 
             // Handle base.Draw
             base.Draw(gameTime);
+        }
+
+        private Matrix UpdateViewMatrix()
+        {
+            keyboardState = keyboardManager.GetState();
+            mouseState = mouseManager.GetState();
+            yaw += mouseState.X * mouseVelocity * gameTime.ElapsedGameTime.Milliseconds;
+            pitch += mouseState.Y * mouseVelocity * gameTime.ElapsedGameTime.Milliseconds;
+            Vector3 direction = new Vector3(
+                (float)(Math.Cos(pitch) * Math.Sin(yaw)),
+                (float)(Math.Sin(pitch)),
+                (float)(Math.Cos(pitch) * Math.Cos(yaw)));
+            Vector3 xAxis = new Vector3(
+                (float)Math.Sin(pitch + Math.PI / 2f),
+                0f, (float)Math.Cos(pitch + Math.PI / 2f));
+            Vector3 yAxis = -1 * Vector3.Cross(direction, xAxis);
+            if (keyboardState.IsKeyDown(Keys.W))
+            {
+                position += moveVelocity * gameTime.ElapsedGameTime.Milliseconds * direction;
+            }
+            if (keyboardState.IsKeyDown(Keys.S))
+            {
+                position -= moveVelocity * gameTime.ElapsedGameTime.Milliseconds * direction;
+            }
+            if (keyboardState.IsKeyDown(Keys.A))
+            {
+                position -= moveVelocity * gameTime.ElapsedGameTime.Milliseconds * xAxis;
+            }
+            if (keyboardState.IsKeyDown(Keys.D))
+            {
+                position += moveVelocity * gameTime.ElapsedGameTime.Milliseconds * xAxis;
+            }
+            if (keyboardState.IsKeyDown(Keys.Q))
+            {
+                position -= moveVelocity * gameTime.ElapsedGameTime.Milliseconds * yAxis;
+            }
+            if (keyboardState.IsKeyDown(Keys.E))
+            {
+                position += moveVelocity * gameTime.ElapsedGameTime.Milliseconds * yAxis;
+            }
+            // mouseManager.SetPosition(new Vector2(1 / 2.0f, 1 / 2.0f));
+            return Matrix.LookAtLH(position, position + direction, yAxis);
         }
     }
 }

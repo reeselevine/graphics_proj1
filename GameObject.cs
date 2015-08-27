@@ -14,7 +14,7 @@ namespace Project1
         public VertexInputLayout inputLayout;
         public Game game;
 
-        public abstract void Update(GameTime gametime);
+        public abstract void Update(GameTime gametime, Matrix world, Matrix view);
         public abstract void Draw(GameTime gametime);
     }
 }

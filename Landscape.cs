@@ -34,11 +34,12 @@ namespace Project1
             this.game = game;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime, Matrix world, Matrix view)
         {
             // Rotate the cube.
             var time = (float)gameTime.TotalGameTime.TotalSeconds;
-            //basicEffect.World = Matrix.RotationX(time) * Matrix.RotationY(time * 2.0f) * Matrix.RotationZ(time * .7f);
+            basicEffect.World = world;
+            basicEffect.View = view;
             basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
         }
 
@@ -58,15 +59,26 @@ namespace Project1
         {
             Vector3 normalVector = new Vector3(0.0f, 0.0f, 0.0f);
             int sideLength = WORLD_SIZE - 1;
-            VertexPositionNormalColor[] vertexList = new VertexPositionNormalColor[WORLD_SIZE * WORLD_SIZE];
-            for (int x = 0; x < WORLD_SIZE; x++)
+            VertexPositionNormalColor[] vertexList = new VertexPositionNormalColor[sideLength * sideLength * 6];
+            for (int x = 0; x < sideLength; x++)
             {
                 float realX = x - sideLength / 2f;
-                for (int z = 0; z < WORLD_SIZE; z++)
+                for (int z = 0; z < sideLength; z++)
                 {
                     float realZ = z - sideLength / 2f;
-                    vertexList[x * WORLD_SIZE + z] = new VertexPositionNormalColor(
+                    vertexList[x * sideLength * 6 + z * 6] = new VertexPositionNormalColor(
                         new Vector3(realX, heightmap[x, z], realZ), normalVector, GetColor(heightmap[x, z]));
+                    vertexList[x * sideLength * 6 + z * 6 + 1] = new VertexPositionNormalColor(
+                        new Vector3(realX + 1f, heightmap[x + 1, z], realZ), normalVector, GetColor(heightmap[x + 1, z]));
+                    vertexList[x * sideLength * 6 + z * 6 + 2] = new VertexPositionNormalColor(
+                        new Vector3(realX + 1f, heightmap[x + 1, z + 1], realZ + 1f), normalVector, GetColor(heightmap[x + 1, z + 1]));
+                    vertexList[x * sideLength * 6 + z * 6 + 3] = new VertexPositionNormalColor(
+                        new Vector3(realX, heightmap[x, z + 1], realZ + 1), normalVector, GetColor(heightmap[x, z + 1]));
+                    vertexList[x * sideLength * 6 + z * 6 + 4] = new VertexPositionNormalColor(
+                        new Vector3(realX, heightmap[x, z], realZ), normalVector, GetColor(heightmap[x, z]));
+                    vertexList[x * sideLength * 6 + z * 6 + 5] = new VertexPositionNormalColor(
+                        new Vector3(realX + 1, heightmap[x + 1, z + 1], realZ + 1), normalVector, GetColor(heightmap[x + 1, z + 1]));
+                    
                 }
             }
             return vertexList;
