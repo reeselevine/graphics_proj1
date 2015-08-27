@@ -19,7 +19,6 @@
 // THE SOFTWARE.
 //authors: Kyra & Reese
 using System;
-
 using SharpDX;
 using SharpDX.Toolkit;
 
@@ -34,7 +33,7 @@ namespace Project1
     {
         private GraphicsDeviceManager graphicsDeviceManager;
         private Landscape model;
-        // Position movment variables
+        // camera movement variables
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
         private KeyboardState keyboardState;
@@ -43,8 +42,7 @@ namespace Project1
         private float moveVelocity;
         private float pitch;
         private float yaw;
-        private float roll;
-        private Vector3 position;
+        private Vector3 eye;
 
 
         /// <summary>
@@ -58,7 +56,9 @@ namespace Project1
             mouseManager = new MouseManager(this);
             pitch = -0.2f;
             yaw = 0f;
-
+            mouseVelocity = 0.05f;
+            moveVelocity = 0.1f;
+            eye = new Vector3(0f, 10f, -30f);
             // Setup the relative directory to the executable directory
             // for loading contents with the ContentManager
             Content.RootDirectory = "Content";
@@ -88,12 +88,23 @@ namespace Project1
 
             // Handle base.Update
             base.Update(gameTime);
+
+            if (keyboardState.IsKeyDown(Keys.Escape))
+            {
+                Exit();
+                Dispose();
+            }
         }
 
         protected override void Draw(GameTime gameTime)
         {
             // Clears the screen with the Color.CornflowerBlue
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            //var wireframe = SharpDX.Direct3D11.RasterizerStateDescription.Default();
+            //wireframe.FillMode = SharpDX.Direct3D11.FillMode.Wireframe;
+            //wireframe.CullMode = SharpDX.Direct3D11.CullMode.None;
+            //var wf = RasterizerState.New(this.GraphicsDevice, wireframe);
+            //GraphicsDevice.SetRasterizerState(wf);
 
             model.Draw(gameTime);
 
@@ -105,42 +116,44 @@ namespace Project1
         {
             keyboardState = keyboardManager.GetState();
             mouseState = mouseManager.GetState();
-            yaw += mouseState.X * mouseVelocity * gameTime.ElapsedGameTime.Milliseconds;
-            pitch += mouseState.Y * mouseVelocity * gameTime.ElapsedGameTime.Milliseconds;
+            float yawDx = 0.5f - mouseState.X;
+            float pitchDy = 0.5f - mouseState.Y;
+            yaw -= yawDx * mouseVelocity * gameTime.ElapsedGameTime.Milliseconds;
+            pitch += pitchDy * mouseVelocity * gameTime.ElapsedGameTime.Milliseconds;
             Vector3 direction = new Vector3(
                 (float)(Math.Cos(pitch) * Math.Sin(yaw)),
                 (float)(Math.Sin(pitch)),
                 (float)(Math.Cos(pitch) * Math.Cos(yaw)));
             Vector3 xAxis = new Vector3(
-                (float)Math.Sin(pitch + Math.PI / 2f),
-                0f, (float)Math.Cos(pitch + Math.PI / 2f));
-            Vector3 yAxis = -1 * Vector3.Cross(direction, xAxis);
-            if (keyboardState.IsKeyDown(Keys.W))
-            {
-                position += moveVelocity * gameTime.ElapsedGameTime.Milliseconds * direction;
-            }
-            if (keyboardState.IsKeyDown(Keys.S))
-            {
-                position -= moveVelocity * gameTime.ElapsedGameTime.Milliseconds * direction;
-            }
+                (float)Math.Sin(yaw + Math.PI / 2f),
+                0f, (float)Math.Cos(yaw + Math.PI / 2f));
+            Vector3 up = Vector3.Cross(direction, xAxis);
             if (keyboardState.IsKeyDown(Keys.A))
             {
-                position -= moveVelocity * gameTime.ElapsedGameTime.Milliseconds * xAxis;
+                eye -= moveVelocity * gameTime.ElapsedGameTime.Milliseconds * xAxis;
             }
             if (keyboardState.IsKeyDown(Keys.D))
             {
-                position += moveVelocity * gameTime.ElapsedGameTime.Milliseconds * xAxis;
+                eye += moveVelocity * gameTime.ElapsedGameTime.Milliseconds * xAxis;
+            }
+            if (keyboardState.IsKeyDown(Keys.W))
+            {
+                eye += moveVelocity * gameTime.ElapsedGameTime.Milliseconds * direction;
+            }
+            if (keyboardState.IsKeyDown(Keys.S))
+            {
+                eye -= moveVelocity * gameTime.ElapsedGameTime.Milliseconds * direction;
             }
             if (keyboardState.IsKeyDown(Keys.Q))
             {
-                position -= moveVelocity * gameTime.ElapsedGameTime.Milliseconds * yAxis;
+                eye -= moveVelocity * gameTime.ElapsedGameTime.Milliseconds * up;
             }
             if (keyboardState.IsKeyDown(Keys.E))
             {
-                position += moveVelocity * gameTime.ElapsedGameTime.Milliseconds * yAxis;
+                eye += moveVelocity * gameTime.ElapsedGameTime.Milliseconds * up;
             }
-            // mouseManager.SetPosition(new Vector2(1 / 2.0f, 1 / 2.0f));
-            return Matrix.LookAtLH(position, position + direction, yAxis);
+            mouseManager.SetPosition(new Vector2(0.5f, 0.5f));
+            return Matrix.LookAtLH(eye, eye + direction, up);
         }
     }
 }
