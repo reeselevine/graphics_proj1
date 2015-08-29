@@ -38,11 +38,7 @@ namespace Project1
             this.game = game;
 
             //water mesh
-            new VertexPositionColor(new Vector3(0f, 0f, 0f),Color.Blue);
-            new VertexPositionColor(new Vector3(worldSize, 0f, 0f),Color.Blue);
-            new VertexPositionColor(new Vector3(worldSize, 0f, worldSize), Color.Blue);
-            new VertexPositionColor(new Vector3(0f, 0f, worldSize), Color.Blue);    
-        
+            
         }
 
         public override void Update(GameTime gameTime, Matrix world, Matrix view)
@@ -130,6 +126,14 @@ namespace Project1
                 }
             }
 
+            vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), new Vector3(0f, 1f, 0f), Color.Blue));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, worldSize), new Vector3(0f, 1f, 0f), Color.Blue));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, worldSize), new Vector3(0f, 1f, 0f), Color.Blue));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), new Vector3(0f, 1f, 0f), Color.Blue));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, worldSize), new Vector3(0f, 1f, 0f), Color.Blue));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, 0f), new Vector3(0f, 1f, 0f), Color.Blue));
+
+
             return vertices.ToArray();
         }
 
@@ -148,11 +152,7 @@ namespace Project1
             {
                 return Color.ForestGreen;
             }
-            if (height > -10f)
-            {
-                return Color.SandyBrown;
-            }
-            return Color.Blue;
+            return Color.SandyBrown;
         }
 
         // Populate a 2D array with values by running the Diamond Square Algorithm
