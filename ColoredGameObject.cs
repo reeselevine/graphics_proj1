@@ -11,6 +11,5 @@ namespace Project1
     abstract public class ColoredGameObject : GameObject
     {
         public Buffer<VertexPositionNormalColor> vertices;
-        public Buffer<int> indexBuffer;
     }
 }

@@ -54,11 +54,11 @@ namespace Project1
             graphicsDeviceManager = new GraphicsDeviceManager(this);
             keyboardManager = new KeyboardManager(this);
             mouseManager = new MouseManager(this);
-            pitch = -0.2f;
+            pitch = -0.5f;
             yaw = 0f;
             mouseVelocity = 0.05f;
             moveVelocity = 0.1f;
-            eye = new Vector3(0f, 10f, -30f);
+            eye = new Vector3(20f, 20f, 20f);
             // Setup the relative directory to the executable directory
             // for loading contents with the ContentManager
             Content.RootDirectory = "Content";

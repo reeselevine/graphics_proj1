@@ -12,11 +12,12 @@ namespace Project1
     {
         private int worldSize = 129; // 2^n + 1, where n = 7
         private float[,] heightMap;
+        private Vector3[,] vertexNormals;
 
         public Landscape(Game game)
         {
             DiamondSquareGenerator();
-            
+            BuildVertexNormals();
             VertexPositionNormalColor[] vertexList = BuildVertexArray();
             
             vertices = Buffer.Vertex.New(
@@ -25,6 +26,8 @@ namespace Project1
             basicEffect = new BasicEffect(game.GraphicsDevice)
             {
                 VertexColorEnabled = true,
+                LightingEnabled = true,
+                PreferPerPixelLighting = false,
                 View = Matrix.LookAtLH(new Vector3(0, 0, -5), new Vector3(0, 0, 0), Vector3.UnitY),
                 Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
                     (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f),
@@ -43,6 +46,12 @@ namespace Project1
             basicEffect.View = view;
             basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
                 (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
+            //basicEffect.DirectionalLight0.Direction = new Vector3(0.5f, -1f, 1f);
+            //basicEffect.DirectionalLight0.DiffuseColor = new Vector3(0.5f, 0.5f, 0.5f);
+            //basicEffect.DirectionalLight0.SpecularColor = new Vector3(0.5f, 0.5f, 0.5f);
+
+            //basicEffect.AmbientLightColor = new Vector3(0.1f, 0.1f, 0.1f);
+            basicEffect.EnableDefaultLighting();
         }
 
         public override void Draw(GameTime gameTime)
@@ -56,36 +65,64 @@ namespace Project1
             game.GraphicsDevice.Draw(PrimitiveType.TriangleList, vertices.ElementCount);
         }
 
+        private void BuildVertexNormals()
+        {
+            vertexNormals = new Vector3[worldSize, worldSize];
+            for (int x = 0; x < worldSize - 1; x++)
+            {
+                for (int z = 0; z < worldSize - 1; z++)
+                {
+                    Vector3 A = new Vector3((float)x, heightMap[x, z], (float)z);
+                    Vector3 B = new Vector3((float)x, heightMap[x, z + 1], (float)z + 1);
+                    Vector3 C = new Vector3((float)x + 1f, heightMap[x + 1, z + 1], (float)z + 1f);
+                    Vector3 normalVector = Vector3.Cross(B - A, C - A);
+                    vertexNormals[x, z] += normalVector;
+                    vertexNormals[x, z + 1] += normalVector;
+                    vertexNormals[x + 1, z + 1] += normalVector;
+                    A = new Vector3((float)x + 1, heightMap[x + 1, z], (float)z);
+                    B = new Vector3((float)x, heightMap[x, z], (float)z);
+                    C = new Vector3((float)x + 1f, heightMap[x + 1, z + 1], (float)z + 1f);
+                    normalVector = Vector3.Cross(B - A, C - A);
+                    vertexNormals[x + 1, z] += normalVector;
+                    vertexNormals[x, z] += normalVector;
+                    vertexNormals[x + 1, z + 1] += normalVector;
+                }
+            }
+            for (int x = 0; x < worldSize; x++)
+            {
+                for (int z = 0; z < worldSize; z++)
+                {
+                    vertexNormals[x, z].Normalize();
+                }
+            }
+        }
+
         // Build vertex list using values from the heightmap
         private VertexPositionNormalColor[] BuildVertexArray()
         {
-            Vector3 normalVector = new Vector3(0.0f, 0.0f, 0.0f);
             List<VertexPositionNormalColor> vertices = new List<VertexPositionNormalColor>();
             int sideLength = worldSize - 1;
+
             for (int x = 0; x < sideLength; x++)
             {
-                float realX = x - sideLength / 2f;
                 for (int z = 0; z < sideLength; z++)
                 {
-                    float realZ = z - sideLength / 2f;
                     vertices.Add(new VertexPositionNormalColor(
-                        new Vector3(realX, heightMap[x, z], realZ), normalVector, GetColor(heightMap[x, z])));
+                        new Vector3((float)x, heightMap[x, z], (float)z), vertexNormals[x, z], GetColor(heightMap[x, z])));
                     vertices.Add(new VertexPositionNormalColor(
-                        new Vector3(realX, heightMap[x, z + 1], realZ + 1), normalVector, GetColor(heightMap[x, z + 1])));
+                        new Vector3((float)x, heightMap[x, z + 1], (float)z + 1), vertexNormals[x, z + 1], GetColor(heightMap[x, z + 1])));
                     vertices.Add(new VertexPositionNormalColor(
-                        new Vector3(realX + 1f, heightMap[x + 1, z + 1], realZ + 1f), normalVector, GetColor(heightMap[x + 1, z + 1])));
+                        new Vector3((float)x + 1f, heightMap[x + 1, z + 1], (float)z + 1f), vertexNormals[x + 1, z + 1], GetColor(heightMap[x + 1, z + 1])));
                     vertices.Add(new VertexPositionNormalColor(
-                        new Vector3(realX + 1f, heightMap[x + 1, z], realZ), normalVector, GetColor(heightMap[x + 1, z])));
+                        new Vector3((float)x + 1f, heightMap[x + 1, z], (float)z), vertexNormals[x + 1, z], GetColor(heightMap[x + 1, z])));
                     vertices.Add(new VertexPositionNormalColor(
-                        new Vector3(realX, heightMap[x, z], realZ), normalVector, GetColor(heightMap[x, z])));
+                        new Vector3((float)x, heightMap[x, z], (float)z), vertexNormals[x, z], GetColor(heightMap[x, z])));
                     vertices.Add(new VertexPositionNormalColor(
-                        new Vector3(realX + 1, heightMap[x + 1, z + 1], realZ + 1), normalVector, GetColor(heightMap[x + 1, z + 1])));
+                        new Vector3((float)x + 1, heightMap[x + 1, z + 1], (float)z + 1), vertexNormals[x + 1, z + 1], GetColor(heightMap[x + 1, z + 1])));
 
                 }
             }
 
-            // TODO: Calculate normal vectors and normalize them
-           
             return vertices.ToArray();
         }
 
@@ -133,7 +170,7 @@ namespace Project1
                         float average = (heightMap[x, y] + heightMap[x + sideLength, y] +
                                             heightMap[x, y + sideLength] +
                                             heightMap[x + sideLength, y + sideLength]) / 4.0f;
-                        heightMap[x + sideLength / 2, y + sideLength / 2] = average + generator.NextFloat(-range, range);
+                        heightMap[x + sideLength / 2, y + sideLength / 2] = average + generator.NextFloat(0, range);
                     }
                 }
                 // The square step of the algorithm. (x, y) is the center of the diamond.
