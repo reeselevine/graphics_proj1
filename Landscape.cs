@@ -10,7 +10,7 @@ namespace Project1
     using SharpDX.Toolkit.Graphics;
     class Landscape : ColoredGameObject
     {
-        private int worldSize = 65; // 2^n + 1, where n = 3
+        private int worldSize = 129; // 2^n + 1, where n = 7
         private float[,] heightMap;
 
         public Landscape(Game game)
@@ -92,11 +92,11 @@ namespace Project1
         // Chooses the color of a vertex at a particular height
         private Color GetColor(float height)
         {
-            if (height > 30f)
+            if (height > 20f)
             {    
                 return Color.Snow;
             } 
-            if (height > 20f)
+            if (height > 15f)
             {
                 return Color.SlateGray;
             }
@@ -108,7 +108,7 @@ namespace Project1
             {
                 return Color.SandyBrown;
             }
-            return Color.LightSteelBlue;
+            return Color.Blue;
         }
 
         // Populate a 2D array with values by running the Diamond Square Algorithm
@@ -116,7 +116,7 @@ namespace Project1
         {
 
             heightMap = new float[worldSize, worldSize];
-            float range = 48.0f;
+            float range = 30.0f;
             Random generator = new Random();
             heightMap[0, 0] = heightMap[0, worldSize - 1] =
                 heightMap[worldSize - 1, 0] = heightMap[worldSize - 1, worldSize - 1] =
@@ -138,9 +138,9 @@ namespace Project1
                 }
                 // The square step of the algorithm. (x, y) is the center of the diamond.
                 int halfDiagonal = sideLength / 2;
-                for (int x = 0; x < worldSize; x += halfDiagonal)
+                for (int x = 0; x < worldSize - 1; x += halfDiagonal)
                 {
-                    for (int y = (x + halfDiagonal) % (sideLength); y < worldSize; y += sideLength)
+                    for (int y = (x + halfDiagonal) % (sideLength); y < worldSize - 1; y += sideLength)
                     {
                         float average = (heightMap[x, (y - halfDiagonal + worldSize - 1) % (worldSize - 1)] +
                                          heightMap[(x + halfDiagonal) % (worldSize - 1), y] +
@@ -148,14 +148,14 @@ namespace Project1
                                          heightMap[(x - halfDiagonal + worldSize - 1) % (worldSize - 1), y]) / 4.0f;
                         average = average + generator.NextFloat(-range, range);
                         heightMap[x, y] = average;
-                        //if (x == 0)
-                        //{
-                        //    heightMap[worldSize - 1, y] = average;
-                        //}
-                        //if (y == 0)
-                        //{
-                        //    heightMap[x, worldSize - 1] = average;
-                        //}
+                        if (x == 0)
+                        {
+                            heightMap[worldSize - 1, y] = average;
+                        }
+                        if (y == 0)
+                        {
+                            heightMap[x, worldSize - 1] = average;
+                        }
                     }
                 }
             }

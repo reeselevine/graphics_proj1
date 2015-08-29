@@ -100,11 +100,11 @@ namespace Project1
         {
             // Clears the screen with the Color.CornflowerBlue
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            //var wireframe = SharpDX.Direct3D11.RasterizerStateDescription.Default();
-            //wireframe.FillMode = SharpDX.Direct3D11.FillMode.Wireframe;
-            //wireframe.CullMode = SharpDX.Direct3D11.CullMode.None;
-            //var wf = RasterizerState.New(this.GraphicsDevice, wireframe);
-            //GraphicsDevice.SetRasterizerState(wf);
+            // Uncomment the following four lines to generate a wireframe image.
+            //SharpDX.Direct3D11.RasterizerStateDescription rasterizer = SharpDX.Direct3D11.RasterizerStateDescription.Default();
+            //rasterizer.FillMode = SharpDX.Direct3D11.FillMode.Wireframe;
+            //RasterizerState rasterizerState = RasterizerState.New(this.GraphicsDevice, rasterizer);
+            //GraphicsDevice.SetRasterizerState(rasterizerState);
 
             model.Draw(gameTime);
 
