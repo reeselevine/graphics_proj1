@@ -65,6 +65,7 @@ namespace Project1
 
             // Apply the basic effect technique and draw the landscape
             basicEffect.CurrentTechnique.Passes[0].Apply();
+            game.GraphicsDevice.SetBlendState(game.GraphicsDevice.BlendStates.AlphaBlend);
             game.GraphicsDevice.Draw(PrimitiveType.TriangleList, vertices.ElementCount);
         }
 
@@ -125,13 +126,21 @@ namespace Project1
 
                 }
             }
-
-            vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), new Vector3(0f, 1f, 0f), Color.Blue));
-            vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, worldSize), new Vector3(0f, 1f, 0f), Color.Blue));
-            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, worldSize), new Vector3(0f, 1f, 0f), Color.Blue));
-            vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), new Vector3(0f, 1f, 0f), Color.Blue));
-            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, worldSize), new Vector3(0f, 1f, 0f), Color.Blue));
-            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, 0f), new Vector3(0f, 1f, 0f), Color.Blue));
+            Color water = new Color(0,0,255,140);
+            Vector3 normal = new Vector3(0f, 1f, 0f);
+            vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, worldSize), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, worldSize), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, worldSize), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, 0f), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, 0f), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, worldSize), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, worldSize), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, worldSize), normal, water));
+           
 
 
             return vertices.ToArray();
@@ -155,6 +164,19 @@ namespace Project1
             return Color.SandyBrown;
         }
 
+        // Returns the height of the heightMap at a certain coordinate without exposing heightMap to
+        // external changes.
+        public bool AllowMovement(Vector3 eye)
+        {
+            int x = (int)Math.Ceiling(eye.X);
+            int z = (int)Math.Ceiling(eye.Z);
+            if (x >= (float)worldSize || x <= 0 || z >= (float)worldSize || z <= 0)
+            {
+                return false;
+            }
+            return !(heightMap[x, z] >= eye.Y);
+        }
+
         // Populate a 2D array with values by running the Diamond Square Algorithm
         private void DiamondSquareGenerator()
         {
@@ -164,7 +186,7 @@ namespace Project1
             Random generator = new Random();
             heightMap[0, 0] = heightMap[0, worldSize - 1] =
                 heightMap[worldSize - 1, 0] = heightMap[worldSize - 1, worldSize - 1] =
-                generator.NextFloat(-10f, 10f);
+                generator.NextFloat(0, 10);
             // This for loop decreases the size of each square or diamond by 2 on each iteration,
             // as well as the range, simulating recursion.
             for (int sideLength = worldSize - 1; sideLength > 1; sideLength /= 2, range /= 2)
@@ -177,7 +199,7 @@ namespace Project1
                         float average = (heightMap[x, y] + heightMap[x + sideLength, y] +
                                             heightMap[x, y + sideLength] +
                                             heightMap[x + sideLength, y + sideLength]) / 4.0f;
-                        heightMap[x + sideLength / 2, y + sideLength / 2] = average + generator.NextFloat(0, range);
+                        heightMap[x + sideLength / 2, y + sideLength / 2] = average + generator.NextFloat(-range, range);
                     }
                 }
                 // The square step of the algorithm. (x, y) is the center of the diamond.

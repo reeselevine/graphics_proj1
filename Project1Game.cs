@@ -42,6 +42,7 @@ namespace Project1
         private float moveVelocity;
         private float pitch;
         private float yaw;
+        private float roll;
         private Vector3 eye;
 
 
@@ -56,9 +57,10 @@ namespace Project1
             mouseManager = new MouseManager(this);
             pitch = -0.5f;
             yaw = 0f;
-            mouseVelocity = 0.01f;
+            roll = 0f;
+            mouseVelocity = 0.05f;
             moveVelocity = 0.1f;
-            eye = new Vector3(20f, 20f, 20f);
+            eye = new Vector3(0f, 50, 0f);
             // Setup the relative directory to the executable directory
             // for loading contents with the ContentManager
             Content.RootDirectory = "Content";
@@ -99,7 +101,7 @@ namespace Project1
         protected override void Draw(GameTime gameTime)
         {
             // Clears the screen with the Color.CornflowerBlue
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
             // Uncomment the following four lines to generate a wireframe image.
             //SharpDX.Direct3D11.RasterizerStateDescription rasterizer = SharpDX.Direct3D11.RasterizerStateDescription.Default();
             //rasterizer.FillMode = SharpDX.Direct3D11.FillMode.Wireframe;
@@ -120,38 +122,55 @@ namespace Project1
             float pitchDy = 0.5f - mouseState.Y;
             yaw -= yawDx * mouseVelocity * gameTime.ElapsedGameTime.Milliseconds;
             pitch += pitchDy * mouseVelocity * gameTime.ElapsedGameTime.Milliseconds;
+            if (keyboardState.IsKeyDown(Keys.Q))
+            {
+               roll += moveVelocity * gameTime.ElapsedGameTime.Milliseconds * .05f;
+            }
+            if (keyboardState.IsKeyDown(Keys.E))
+            {
+                roll -= moveVelocity * gameTime.ElapsedGameTime.Milliseconds * .05f;
+            }
             Vector3 direction = new Vector3(
                 (float)(Math.Cos(pitch) * Math.Sin(yaw)),
                 (float)(Math.Sin(pitch)),
                 (float)(Math.Cos(pitch) * Math.Cos(yaw)));
             Vector3 xAxis = new Vector3(
-                (float)Math.Sin(yaw + Math.PI / 2f),
-                0f, (float)Math.Cos(yaw + Math.PI / 2f));
+                (float)(Math.Sin(yaw + Math.PI / 2f) * Math.Cos(roll)),
+                (float)Math.Sin(roll), (float)(Math.Cos(yaw + Math.PI / 2f) * Math.Cos(roll)));
             Vector3 up = Vector3.Cross(direction, xAxis);
             if (keyboardState.IsKeyDown(Keys.A))
             {
-                eye -= moveVelocity * gameTime.ElapsedGameTime.Milliseconds * xAxis;
+                Vector3 eyeChange = eye - moveVelocity * gameTime.ElapsedGameTime.Milliseconds * xAxis;
+                if (model.AllowMovement(eyeChange))
+                {
+                eye = eyeChange;
+                }
             }
             if (keyboardState.IsKeyDown(Keys.D))
             {
-                eye += moveVelocity * gameTime.ElapsedGameTime.Milliseconds * xAxis;
+                Vector3 eyeChange = eye + moveVelocity * gameTime.ElapsedGameTime.Milliseconds * xAxis;
+                if (model.AllowMovement(eyeChange))
+                {
+                    eye = eyeChange;
+                }
             }
             if (keyboardState.IsKeyDown(Keys.W))
             {
-                eye += moveVelocity * gameTime.ElapsedGameTime.Milliseconds * direction;
+                Vector3 eyeChange = eye + moveVelocity * gameTime.ElapsedGameTime.Milliseconds * direction;
+                if (model.AllowMovement(eyeChange))
+                {
+                    eye = eyeChange;
+                }
             }
             if (keyboardState.IsKeyDown(Keys.S))
             {
-                eye -= moveVelocity * gameTime.ElapsedGameTime.Milliseconds * direction;
+                Vector3 eyeChange = eye - moveVelocity * gameTime.ElapsedGameTime.Milliseconds * direction;
+                if (model.AllowMovement(eyeChange))
+                {
+                    eye = eyeChange;
+                }
             }
-            if (keyboardState.IsKeyDown(Keys.Q))
-            {
-                eye -= moveVelocity * gameTime.ElapsedGameTime.Milliseconds * up;
-            }
-            if (keyboardState.IsKeyDown(Keys.E))
-            {
-                eye += moveVelocity * gameTime.ElapsedGameTime.Milliseconds * up;
-            }
+            
             mouseManager.SetPosition(new Vector2(0.5f, 0.5f));
             return Matrix.LookAtLH(eye, eye + direction, up);
         }
