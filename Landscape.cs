@@ -13,6 +13,10 @@ namespace Project1
         private int worldSize = 129; // 2^n + 1, where n = 7
         private float[,] heightMap;
         private Vector3[,] vertexNormals;
+        private Vector3 lightDirection;
+        private Vector3 specularColor;
+        private Vector3 diffuseColor;
+        private Vector3 ambientColor;
 
         public Landscape(Game game)
         {
@@ -22,12 +26,16 @@ namespace Project1
             
             vertices = Buffer.Vertex.New(
                                     game.GraphicsDevice, vertexList);
+            lightDirection = new Vector3(0.5f, -1f, 1f);
+            specularColor = new Vector3(0.5f, 0.5f, 0.5f);
+            diffuseColor = new Vector3(0.5f, 0.5f, 0.5f);
+            ambientColor = new Vector3(0.1f, 0.1f, 0.1f);
 
             basicEffect = new BasicEffect(game.GraphicsDevice)
             {
                 VertexColorEnabled = true,
                 LightingEnabled = true,
-                PreferPerPixelLighting = false,
+                PreferPerPixelLighting = true,
                 View = Matrix.LookAtLH(new Vector3(0, 0, -5), new Vector3(0, 0, 0), Vector3.UnitY),
                 Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
                     (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f),
@@ -49,12 +57,10 @@ namespace Project1
             basicEffect.View = view;
             basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
                 (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
-            //basicEffect.DirectionalLight0.Direction = new Vector3(0.5f, -1f, 1f);
-            //basicEffect.DirectionalLight0.DiffuseColor = new Vector3(0.5f, 0.5f, 0.5f);
-            //basicEffect.DirectionalLight0.SpecularColor = new Vector3(0.5f, 0.5f, 0.5f);
-
-            //basicEffect.AmbientLightColor = new Vector3(0.1f, 0.1f, 0.1f);
-            basicEffect.EnableDefaultLighting();
+            basicEffect.DirectionalLight0.Direction = lightDirection;
+            basicEffect.DirectionalLight0.DiffuseColor = diffuseColor;
+            basicEffect.DirectionalLight0.SpecularColor = specularColor;
+            basicEffect.AmbientLightColor = ambientColor;
         }
 
         public override void Draw(GameTime gameTime)
@@ -129,17 +135,17 @@ namespace Project1
             Color water = new Color(0,0,255,140);
             Vector3 normal = new Vector3(0f, 1f, 0f);
             vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), normal, water));
-            vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, worldSize), normal, water));
-            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, worldSize), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, worldSize - 1), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize - 1, 0f, worldSize - 1), normal, water));
             vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), normal, water));
-            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, worldSize), normal, water));
-            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, 0f), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize - 1, 0f, worldSize - 1), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize - 1, 0f, 0f), normal, water));
             vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), normal, water));
-            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, 0f), normal, water));
-            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, worldSize), normal, water));
-            vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, worldSize), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize - 1, 0f, 0f), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize - 1, 0f, worldSize - 1), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, worldSize - 1), normal, water));
             vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), normal, water));
-            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize, 0f, worldSize), normal, water));
+            vertices.Add(new VertexPositionNormalColor(new Vector3(worldSize - 1, 0f, worldSize - 1), normal, water));
            
 
 
@@ -174,7 +180,7 @@ namespace Project1
             {
                 return false;
             }
-            return !(heightMap[x, z] >= eye.Y);
+            return !(heightMap[x, z] >= eye.Y - 1f);
         }
 
         // Populate a 2D array with values by running the Diamond Square Algorithm

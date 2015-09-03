@@ -94,7 +94,6 @@ namespace Project1
             if (keyboardState.IsKeyDown(Keys.Escape))
             {
                 Exit();
-                Dispose();
             }
         }
 
@@ -124,7 +123,7 @@ namespace Project1
             pitch += pitchDy * mouseVelocity * gameTime.ElapsedGameTime.Milliseconds;
             if (keyboardState.IsKeyDown(Keys.Q))
             {
-               roll += moveVelocity * gameTime.ElapsedGameTime.Milliseconds * .05f;
+                roll += moveVelocity * gameTime.ElapsedGameTime.Milliseconds * .05f;
             }
             if (keyboardState.IsKeyDown(Keys.E))
             {
@@ -170,7 +169,6 @@ namespace Project1
                     eye = eyeChange;
                 }
             }
-            
             mouseManager.SetPosition(new Vector2(0.5f, 0.5f));
             return Matrix.LookAtLH(eye, eye + direction, up);
         }
