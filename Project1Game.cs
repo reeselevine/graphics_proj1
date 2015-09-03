@@ -32,7 +32,9 @@ namespace Project1
     public class Project1Game : Game
     {
         private GraphicsDeviceManager graphicsDeviceManager;
+        private int worldSize;
         private Landscape model;
+        private Sun sun;
         // camera movement variables
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
@@ -55,6 +57,7 @@ namespace Project1
             graphicsDeviceManager = new GraphicsDeviceManager(this);
             keyboardManager = new KeyboardManager(this);
             mouseManager = new MouseManager(this);
+            worldSize = 129;
             pitch = -0.5f;
             yaw = 0f;
             roll = 0f;
@@ -68,7 +71,13 @@ namespace Project1
 
         protected override void LoadContent()
         {
-            model = new Landscape(this);
+            float x = worldSize/2f;
+            float y = 0f;
+            float z = (float)Math.PI;
+            float rotationSpeed = 0.01f;
+            float sideLength = 5f;
+            model = new Landscape(this, rotationSpeed, worldSize);
+            sun = new Sun(this, x, y, z, sideLength, rotationSpeed, worldSize);
 
             // Create an input layout from the vertices
 
@@ -87,6 +96,7 @@ namespace Project1
             Matrix view = UpdateViewMatrix();
 
             model.Update(gameTime, Matrix.Identity, view);
+            sun.Update(gameTime, Matrix.Identity, view);
 
             // Handle base.Update
             base.Update(gameTime);
@@ -108,6 +118,7 @@ namespace Project1
             //GraphicsDevice.SetRasterizerState(rasterizerState);
 
             model.Draw(gameTime);
+            sun.Draw(gameTime);
 
             // Handle base.Draw
             base.Draw(gameTime);

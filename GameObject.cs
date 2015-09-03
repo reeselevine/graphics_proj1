@@ -13,6 +13,7 @@ namespace Project1
         public BasicEffect basicEffect;
         public VertexInputLayout inputLayout;
         public Game game;
+        public float rotationSpeed;
 
         public abstract void Update(GameTime gametime, Matrix world, Matrix view);
         public abstract void Draw(GameTime gametime);
