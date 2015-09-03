@@ -35,7 +35,7 @@ namespace Project1
             lightDirection = new Vector3(0f, (float)Math.Sin(yAngle), (float)Math.Cos(zAngle));
             specularColor = new Vector3(0.5f, 0.5f, 0.5f);
             diffuseColor = new Vector3(0.5f, 0.5f, 0.5f);
-            ambientColor = new Vector3(0.2f, 0.2f, 0.2f);
+            ambientColor = new Vector3(0.1f, 0.1f, 0.1f);
 
             basicEffect = new BasicEffect(game.GraphicsDevice)
             {
@@ -50,14 +50,15 @@ namespace Project1
 
             inputLayout = VertexInputLayout.FromBuffer(0, vertices);
             this.game = game;
+
         }
 
         public override void Update(GameTime gameTime, Matrix world, Matrix view)
         {
-            var time = (float)gameTime.TotalGameTime.TotalSeconds;
             zAngle += rotationSpeed;
             yAngle += rotationSpeed;
             lightDirection = new Vector3(0f, (float)Math.Sin(yAngle), (float)Math.Cos(zAngle));
+            var time = (float)gameTime.TotalGameTime.TotalSeconds;
             basicEffect.World = world;
             basicEffect.View = view;
             basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
@@ -65,7 +66,6 @@ namespace Project1
             basicEffect.DirectionalLight0.Direction = lightDirection;
             basicEffect.DirectionalLight0.DiffuseColor = diffuseColor;
             basicEffect.DirectionalLight0.SpecularColor = specularColor;
-            basicEffect.DirectionalLight0.Enabled = true;
             basicEffect.AmbientLightColor = ambientColor;
         }
 
