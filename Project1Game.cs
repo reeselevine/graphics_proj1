@@ -109,13 +109,8 @@ namespace Project1
 
         protected override void Draw(GameTime gameTime)
         {
-            // Clears the screen with the Color.CornflowerBlue
+            // Clears the screen with the Color.Black
             GraphicsDevice.Clear(Color.Black);
-            // Uncomment the following four lines to generate a wireframe image.
-            //SharpDX.Direct3D11.RasterizerStateDescription rasterizer = SharpDX.Direct3D11.RasterizerStateDescription.Default();
-            //rasterizer.FillMode = SharpDX.Direct3D11.FillMode.Wireframe;
-            //RasterizerState rasterizerState = RasterizerState.New(this.GraphicsDevice, rasterizer);
-            //GraphicsDevice.SetRasterizerState(rasterizerState);
 
             model.Draw(gameTime);
             sun.Draw(gameTime);
@@ -144,13 +139,13 @@ namespace Project1
                 (float)(Math.Cos(pitch) * Math.Sin(yaw)),
                 (float)(Math.Sin(pitch)),
                 (float)(Math.Cos(pitch) * Math.Cos(yaw)));
-            Vector3 xAxis = new Vector3(
+            Vector3 horizontalAxis = new Vector3(
                 (float)(Math.Sin(yaw + Math.PI / 2f) * Math.Cos(roll)),
                 (float)Math.Sin(roll), (float)(Math.Cos(yaw + Math.PI / 2f) * Math.Cos(roll)));
-            Vector3 up = Vector3.Cross(direction, xAxis);
+            Vector3 up = Vector3.Cross(direction, horizontalAxis);
             if (keyboardState.IsKeyDown(Keys.A))
             {
-                Vector3 eyeChange = eye - moveVelocity * gameTime.ElapsedGameTime.Milliseconds * xAxis;
+                Vector3 eyeChange = eye - moveVelocity * gameTime.ElapsedGameTime.Milliseconds * horizontalAxis;
                 if (model.AllowMovement(eyeChange))
                 {
                 eye = eyeChange;
@@ -158,7 +153,7 @@ namespace Project1
             }
             if (keyboardState.IsKeyDown(Keys.D))
             {
-                Vector3 eyeChange = eye + moveVelocity * gameTime.ElapsedGameTime.Milliseconds * xAxis;
+                Vector3 eyeChange = eye + moveVelocity * gameTime.ElapsedGameTime.Milliseconds * horizontalAxis;
                 if (model.AllowMovement(eyeChange))
                 {
                     eye = eyeChange;

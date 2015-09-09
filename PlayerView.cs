@@ -31,7 +31,7 @@ namespace Project1
                 PreferPerPixelLighting = true,
                 View = Matrix.LookAtLH(new Vector3(0, 0, -5), new Vector3(0, 0, 0), Vector3.UnitY),
                 Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
-                    (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f),
+                    (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 1000.0f),
                 World = Matrix.Identity
             };
             this.game = game;

@@ -62,7 +62,7 @@ namespace Project1
             basicEffect.World = world;
             basicEffect.View = view;
             basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
-                (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
+                (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 1000.0f);
             basicEffect.DirectionalLight0.Direction = lightDirection;
             basicEffect.DirectionalLight0.DiffuseColor = diffuseColor;
             basicEffect.DirectionalLight0.SpecularColor = specularColor;
