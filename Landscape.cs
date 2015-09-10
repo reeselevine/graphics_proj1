@@ -17,6 +17,8 @@ namespace Project1
         private Vector3 specularColor;
         private Vector3 diffuseColor;
         private Vector3 ambientColor;
+        private float rotationSpeed;
+
         private float zAngle;
         private float yAngle;
 
@@ -25,17 +27,17 @@ namespace Project1
             this.worldSize = worldSize;
             DiamondSquareGenerator();
             BuildVertexNormals();
-            VertexPositionNormalColor[] vertexList = BuildVertexArray();
-            
-            vertices = Buffer.Vertex.New(
-                                    game.GraphicsDevice, vertexList);
+            VertexPositionNormalColor[] vertexList = BuildVertexArray();       
+            vertices = Buffer.Vertex.New(game.GraphicsDevice, vertexList);
+            rotationSpeed = 0.01f;
             this.rotationSpeed = rotationSpeed;
+
             zAngle = 0f;
             yAngle = (float)Math.PI;
             lightDirection = new Vector3(0f, (float)Math.Sin(yAngle), (float)Math.Cos(zAngle));
             specularColor = new Vector3(0.5f, 0.5f, 0.5f);
             diffuseColor = new Vector3(0.5f, 0.5f, 0.5f);
-            ambientColor = new Vector3(0.1f, 0.1f, 0.1f);
+            ambientColor = new Vector3(0.2f, 0.2f, 0.2f);
 
             basicEffect = new BasicEffect(game.GraphicsDevice)
             {
@@ -58,7 +60,11 @@ namespace Project1
             zAngle += rotationSpeed;
             yAngle += rotationSpeed;
             lightDirection = new Vector3(0f, (float)Math.Sin(yAngle), (float)Math.Cos(zAngle));
+
             var time = (float)gameTime.TotalGameTime.TotalSeconds;
+            zAngle += rotationSpeed;
+            yAngle += rotationSpeed;
+            lightDirection = new Vector3(0f, (float)Math.Sin(yAngle), (float)Math.Cos(zAngle));
             basicEffect.World = world;
             basicEffect.View = view;
             basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
@@ -66,6 +72,7 @@ namespace Project1
             basicEffect.DirectionalLight0.Direction = lightDirection;
             basicEffect.DirectionalLight0.DiffuseColor = diffuseColor;
             basicEffect.DirectionalLight0.SpecularColor = specularColor;
+            basicEffect.DirectionalLight0.Enabled = true;
             basicEffect.AmbientLightColor = ambientColor;
         }
 
@@ -138,7 +145,7 @@ namespace Project1
 
                 }
             }
-            Color water = new Color(0,0,255,140);
+            Color water = new Color(0,0,255, 140);
             Vector3 normal = new Vector3(0f, 1f, 0f);
             vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, 0f), normal, water));
             vertices.Add(new VertexPositionNormalColor(new Vector3(0f, 0f, worldSize - 1), normal, water));
@@ -194,7 +201,7 @@ namespace Project1
         {
 
             heightMap = new float[worldSize, worldSize];
-            float range = 50.0f;
+            float range = 40.0f;
             Random generator = new Random();
             heightMap[0, 0] = heightMap[0, worldSize - 1] =
                 heightMap[worldSize - 1, 0] = heightMap[worldSize - 1, worldSize - 1] =
@@ -238,6 +245,5 @@ namespace Project1
                 }
             }
         }
-
     }
 }
