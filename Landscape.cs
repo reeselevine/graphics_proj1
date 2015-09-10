@@ -17,7 +17,6 @@ namespace Project1
         private Vector3 specularColor;
         private Vector3 diffuseColor;
         private Vector3 ambientColor;
-        private float rotationSpeed;
 
         private float zAngle;
         private float yAngle;
@@ -37,7 +36,7 @@ namespace Project1
             lightDirection = new Vector3(0f, (float)Math.Sin(yAngle), (float)Math.Cos(zAngle));
             specularColor = new Vector3(0.5f, 0.5f, 0.5f);
             diffuseColor = new Vector3(0.5f, 0.5f, 0.5f);
-            ambientColor = new Vector3(0.2f, 0.2f, 0.2f);
+            ambientColor = new Vector3(0.1f, 0.1f, 0.1f);
 
             basicEffect = new BasicEffect(game.GraphicsDevice)
             {
@@ -171,11 +170,11 @@ namespace Project1
         // Chooses the color of a vertex at a particular height
         private Color GetColor(float height)
         {
-            if (height > 20f)
+            if (height > 30f)
             {    
                 return Color.Snow;
             } 
-            if (height > 15f)
+            if (height > 20f)
             {
                 return Color.SlateGray;
             }
@@ -204,11 +203,11 @@ namespace Project1
         {
 
             heightMap = new float[worldSize, worldSize];
-            float range = 50.0f;
+            float range = 70.0f;
             Random generator = new Random();
             heightMap[0, 0] = heightMap[0, worldSize - 1] =
                 heightMap[worldSize - 1, 0] = heightMap[worldSize - 1, worldSize - 1] =
-                generator.NextFloat(0, 10);
+                generator.NextFloat(-5, 10);
             // This for loop decreases the size of each square or diamond by 2 on each iteration,
             // as well as the range, simulating recursion.
             for (int sideLength = worldSize - 1; sideLength > 1; sideLength /= 2, range /= 2)

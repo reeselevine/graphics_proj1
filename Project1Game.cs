@@ -57,9 +57,9 @@ namespace Project1
             graphicsDeviceManager = new GraphicsDeviceManager(this);
             keyboardManager = new KeyboardManager(this);
             mouseManager = new MouseManager(this);
-            worldSize = 129;
-            pitch = -0.5f;
-            yaw = 0f;
+            worldSize = 257;
+            pitch = -0.3f;
+            yaw = 0.8f;
             roll = 0f;
             mouseVelocity = 0.05f;
             moveVelocity = 0.1f;
@@ -74,8 +74,8 @@ namespace Project1
             float x = worldSize/2f;
             float y = 0f;
             float z = (float)Math.PI;
-            float rotationSpeed = 0.01f;
-            float sideLength = 20f;
+            float rotationSpeed = 0.005f;
+            float sideLength = 50f;
             model = new Landscape(this, rotationSpeed, worldSize);
             sun = new Sun(this, x, y, z, sideLength, rotationSpeed, worldSize);
 
