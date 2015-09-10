@@ -75,7 +75,7 @@ namespace Project1
             float y = 0f;
             float z = (float)Math.PI;
             float rotationSpeed = 0.01f;
-            float sideLength = 5f;
+            float sideLength = 20f;
             model = new Landscape(this, rotationSpeed, worldSize);
             sun = new Sun(this, x, y, z, sideLength, rotationSpeed, worldSize);
 

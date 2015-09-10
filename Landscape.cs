@@ -29,7 +29,6 @@ namespace Project1
             BuildVertexNormals();
             VertexPositionNormalColor[] vertexList = BuildVertexArray();       
             vertices = Buffer.Vertex.New(game.GraphicsDevice, vertexList);
-            rotationSpeed = 0.01f;
             this.rotationSpeed = rotationSpeed;
 
             zAngle = 0f;
@@ -57,10 +56,6 @@ namespace Project1
 
         public override void Update(GameTime gameTime, Matrix world, Matrix view)
         {
-            zAngle += rotationSpeed;
-            yAngle += rotationSpeed;
-            lightDirection = new Vector3(0f, (float)Math.Sin(yAngle), (float)Math.Cos(zAngle));
-
             var time = (float)gameTime.TotalGameTime.TotalSeconds;
             zAngle += rotationSpeed;
             yAngle += rotationSpeed;

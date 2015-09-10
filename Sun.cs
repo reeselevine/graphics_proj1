@@ -15,24 +15,25 @@ namespace Project1
         float yAngle;
         float zAngle;
         float sideLength;
-        float radius;
-        public Sun(Game game, float x, float yAngle, float zAngle, float sideLength, float rotationSpeed, float radius)
+        float diameter;
+        Matrix projection;
+        public Sun(Game game, float x, float yAngle, float zAngle, float sideLength, float rotationSpeed, float diameter)
         {
             this.rotationSpeed = rotationSpeed;
             this.x = x;
             this.yAngle = yAngle;
             this.zAngle = zAngle;
             this.sideLength = sideLength;
-            this.radius = radius;
+            this.diameter = diameter;
+            this.projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
+                    (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 1000.0f);
             basicEffect = new BasicEffect(game.GraphicsDevice)
             {
                 VertexColorEnabled = true,
                 LightingEnabled = false,
                 PreferPerPixelLighting = true,
                 View = Matrix.LookAtLH(new Vector3(0, 0, -5), new Vector3(0, 0, 0), Vector3.UnitY),
-                Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
-                    (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 1000.0f),
-                World = Matrix.Identity
+                Projection = projection
             };
             this.game = game;
             BuildVertices();
@@ -44,8 +45,7 @@ namespace Project1
             var time = (float)gameTime.TotalGameTime.TotalSeconds;
             basicEffect.World = world;
             basicEffect.View = view;
-            basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
-                (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
+            basicEffect.Projection = this.projection;
             yAngle += rotationSpeed;
             zAngle += rotationSpeed;
             BuildVertices();
@@ -64,8 +64,8 @@ namespace Project1
 
         private void BuildVertices()
         {
-            float y = radius/2f * (float)Math.Sin(yAngle);
-            float z = radius * (float)Math.Cos(zAngle);
+            float y = diameter * (float)Math.Sin(yAngle);
+            float z = diameter * (float)Math.Cos(zAngle) + diameter/2f;
             Color color = Color.Yellow;
             Vector3 frontBottomLeft = new Vector3(x, y, z);
             Vector3 frontTopLeft = new Vector3(x, y + sideLength, z);
